@@ -1,0 +1,122 @@
+[
+  {
+    "username": "james_bond",
+    "email": "james.bond@mi6.uk",
+    "password": "007agent",
+    "savedBooks": [
+      {
+        "bookId": "xrUrAQAAQBAJ",
+        "title": "Casino Royale",
+        "authors": ["Ian Fleming"],
+        "description": "James Bond's first mission as 007 leads him to a high-stakes poker game against a corrupt banker.",
+        "image": "http://books.google.com/books/content?id=xrUrAQAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "link": "https://books.google.com/books/about/Casino_Royale.html?id=xrUrAQAAQBAJ"
+      }
+    ]
+  },
+  {
+    "username": "george_smirnov",
+    "email": "george.smirnov@kgb.ru",
+    "password": "kgbspy",
+    "savedBooks": [
+      {
+        "bookId": "xzYKDgAAQBAJ",
+        "title": "Tinker Tailor Soldier Spy",
+        "authors": ["John le Carré"],
+        "description": "An ex-British intelligence officer is called out of retirement to root out a Soviet mole in MI6.",
+        "image": "http://books.google.com/books/content?id=xzYKDgAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "link": "https://books.google.com/books/about/Tinker_Tailor_Soldier_Spy.html?id=xzYKDgAAQBAJ"
+      }
+    ]
+  },
+  {
+    "username": "natasha_romanoff",
+    "email": "natasha.romanoff@avengers.com",
+    "password": "blackwidow",
+    "savedBooks": [
+      {
+        "bookId": "TfI6CgAAQBAJ",
+        "title": "Red Sparrow",
+        "authors": ["Jason Matthews"],
+        "description": "A Russian intelligence officer is trained in the art of 'sparrow' seduction to trap CIA agents in Cold War espionage.",
+        "image": "http://books.google.com/books/content?id=TfI6CgAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "link": "https://books.google.com/books/about/Red_Sparrow.html?id=TfI6CgAAQBAJ"
+      }
+    ]
+  },
+  {
+    "username": "harry_palmer",
+    "email": "harry.palmer@intelligence.com",
+    "password": "ipcreport",
+    "savedBooks": [
+      {
+        "bookId": "7EY1DwAAQBAJ",
+        "title": "The Ipcress File",
+        "authors": ["Len Deighton"],
+        "description": "A working-class British intelligence agent uncovers a brainwashing conspiracy in the midst of the Cold War.",
+        "image": "http://books.google.com/books/content?id=7EY1DwAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "link": "https://books.google.com/books/about/The_Ipcress_File.html?id=7EY1DwAAQBAJ"
+      }
+    ]
+  },
+  {
+    "username": "jason_bourne",
+    "email": "jason.bourne@cia.com",
+    "password": "whoami",
+    "savedBooks": [
+      {
+        "bookId": "Ds7wDwAAQBAJ",
+        "title": "The Bourne Identity",
+        "authors": ["Robert Ludlum"],
+        "description": "A man suffering from amnesia must uncover his true identity while being pursued by assassins across Europe.",
+        "image": "http://books.google.com/books/content?id=Ds7wDwAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "link": "https://books.google.com/books/about/The_Bourne_Identity.html?id=Ds7wDwAAQBAJ"
+      }
+    ]
+  },
+  {
+    "username": "evelyn_salt",
+    "email": "evelyn.salt@cia.com",
+    "password": "russianmole",
+    "savedBooks": [
+      {
+        "bookId": "jFhbCwAAQBAJ",
+        "title": "The Spy Who Came in from the Cold",
+        "authors": ["John le Carré"],
+        "description": "A disillusioned British spy is sent on a dangerous mission across the Berlin Wall in a Cold War thriller.",
+        "image": "http://books.google.com/books/content?id=jFhbCwAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "link": "https://books.google.com/books/about/The_Spy_Who_Came_in_from_the_Cold.html?id=jFhbCwAAQBAJ"
+      }
+    ]
+  },
+  {
+    "username": "mitch_rap",
+    "email": "mitch.rap@cia.com",
+    "password": "ciaassassin",
+    "savedBooks": [
+      {
+        "bookId": "hAwGBgAAQBAJ",
+        "title": "American Assassin",
+        "authors": ["Vince Flynn"],
+        "description": "A counter-terrorism operative must navigate the world of covert operations to eliminate terrorist threats.",
+        "image": "http://books.google.com/books/content?id=hAwGBgAAQBAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "link": "https://books.google.com/books/about/American_Assassin.html?id=hAwGBgAAQBAJ"
+      }
+    ]
+  },
+  {
+    "username": "gabriel_allon",
+    "email": "gabriel.allon@mossad.com",
+    "password": "artrestorer",
+    "savedBooks": [
+      {
+        "bookId": "vQscAQAAMAAJ",
+        "title": "The Kill Artist",
+        "authors": ["Daniel Silva"],
+        "description": "An art restorer and former Israeli intelligence operative is drawn back into the world of espionage after an assassination.",
+        "image": "http://books.google.com/books/content?id=vQscAQAAMAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
+        "link": "https://books.google.com/books/about/The_Kill_Artist.html?id=vQscAQAAMAAJ"
+      }
+    ]
+  }
+]

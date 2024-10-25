@@ -5,11 +5,16 @@ const { signToken } = require('../utils/auth');
 
 const resolvers = {
   Query: {
+    //Get all users
+    users: async () => {
+      return User.find({});
+    },
+    
     //Get the details of the logged-in user
     me: async (parent, args, context) => {
       if (context.user) {
         const userData = await User.findOne({ _id: context.user._id })
-          .select('-__v -password')
+          .select('-__v -password') //Exclude the version key
           .populate('savedBooks'); // Populate the savedBooks field (if necessary)
 
         return userData;
@@ -21,8 +26,8 @@ const resolvers = {
     // Get a single user by their username
     user: async (parent, { username }) => {
       return User.findOne({ username })
-        .select('-__v -password')
-        .populate('savedBooks');
+        .select('-__v -password') //Exclude both the version key and the password 
+        .populate('savedBooks'); // Populate the savedBooks field (if necessary)
     },
   },
 
@@ -56,13 +61,13 @@ const resolvers = {
     // Save a new book to the user's savedBooks array (if authenticated)
     saveBook: async (parent, { input }, context) => {
       if (context.user) {
-        const objUpdatedUser = await User.findByIdAndUpdate(
+        const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $addToSet: { savedBooks: input } }, // Add to set to avoid duplicate entries
+          { $addToSet: { savedBooks: input } }, // Using addToSet to avoid duplicate entries
           { new: true, runValidators: true }
         ).populate('savedBooks');
 
-        return objUpdatedUser;
+        return updatedUser;
       }
 
       throw new AuthenticationError('You need to be logged in!');
@@ -71,13 +76,13 @@ const resolvers = {
     // Delete a book from the user's savedBooks array (if authenticated)
     deleteBook: async (parent, { bookId }, context) => {
       if (context.user) {
-        const objUpdatedUser = await User.findByIdAndUpdate(
+        const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
           { $pull: { savedBooks: { bookId } } }, // Pull the book with the matching bookId
           { new: true }
         ).populate('savedBooks');
 
-        return objUpdatedUser;
+        return updatedUser;
       }
 
       throw new AuthenticationError('You need to be logged in!');
