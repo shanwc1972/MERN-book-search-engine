@@ -1,119 +1,88 @@
-const { User, Thought } = require('../models');
-const { signToken, AuthenticationError } = require('../utils/auth');
+//Setup our imports
+const { AuthenticationError } = require('apollo-server-express');
+const { User } = require('../models');
+const { signToken } = require('../utils/auth');
 
 const resolvers = {
   Query: {
-    users: async () => {
-      return User.find().populate('thoughts');
-    },
-    user: async (parent, { username }) => {
-      return User.findOne({ username }).populate('thoughts');
-    },
-    thoughts: async (parent, { username }) => {
-      const params = username ? { username } : {};
-      return Thought.find(params).sort({ createdAt: -1 });
-    },
-    thought: async (parent, { thoughtId }) => {
-      return Thought.findOne({ _id: thoughtId });
-    },
+    //Get the details of the logged-in user
     me: async (parent, args, context) => {
       if (context.user) {
-        return User.findOne({ _id: context.user._id }).populate('thoughts');
+        const userData = await User.findOne({ _id: context.user._id })
+          .select('-__v -password')
+          .populate('savedBooks'); // Populate the savedBooks field (if necessary)
+
+        return userData;
       }
+
       throw new AuthenticationError('You need to be logged in!');
+    },
+
+    // Get a single user by their username
+    user: async (parent, { username }) => {
+      return User.findOne({ username })
+        .select('-__v -password')
+        .populate('savedBooks');
     },
   },
 
   Mutation: {
-    addUser: async (parent, { username, email, password }) => {
+    // Create a new user and return auth token
+    createUser: async (parent, { username, email, password }) => {
       const user = await User.create({ username, email, password });
       const token = signToken(user);
+
       return { token, user };
     },
+
+    // Login user and return auth token
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email });
 
       if (!user) {
-        throw AuthenticationError;
+        throw new AuthenticationError('Incorrect email or password');
       }
 
       const correctPw = await user.isCorrectPassword(password);
 
       if (!correctPw) {
-        throw AuthenticationError;
+        throw new AuthenticationError('Incorrect email or password');
       }
 
       const token = signToken(user);
-
       return { token, user };
     },
-    addThought: async (parent, { thoughtText }, context) => {
-      if (context.user) {
-        const thought = await Thought.create({
-          thoughtText,
-          thoughtAuthor: context.user.username,
-        });
 
-        await User.findOneAndUpdate(
+    // Save a new book to the user's savedBooks array (if authenticated)
+    saveBook: async (parent, { input }, context) => {
+      if (context.user) {
+        const objUpdatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $addToSet: { thoughts: thought._id } }
-        );
+          { $addToSet: { savedBooks: input } }, // Add to set to avoid duplicate entries
+          { new: true, runValidators: true }
+        ).populate('savedBooks');
 
-        return thought;
+        return objUpdatedUser;
       }
-      throw AuthenticationError;
-      ('You need to be logged in!');
-    },
-    addComment: async (parent, { thoughtId, commentText }, context) => {
-      if (context.user) {
-        return Thought.findOneAndUpdate(
-          { _id: thoughtId },
-          {
-            $addToSet: {
-              comments: { commentText, commentAuthor: context.user.username },
-            },
-          },
-          {
-            new: true,
-            runValidators: true,
-          }
-        );
-      }
-      throw AuthenticationError;
-    },
-    removeThought: async (parent, { thoughtId }, context) => {
-      if (context.user) {
-        const thought = await Thought.findOneAndDelete({
-          _id: thoughtId,
-          thoughtAuthor: context.user.username,
-        });
 
-        await User.findOneAndUpdate(
+      throw new AuthenticationError('You need to be logged in!');
+    },
+
+    // Delete a book from the user's savedBooks array (if authenticated)
+    deleteBook: async (parent, { bookId }, context) => {
+      if (context.user) {
+        const objUpdatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $pull: { thoughts: thought._id } }
-        );
-
-        return thought;
-      }
-      throw AuthenticationError;
-    },
-    removeComment: async (parent, { thoughtId, commentId }, context) => {
-      if (context.user) {
-        return Thought.findOneAndUpdate(
-          { _id: thoughtId },
-          {
-            $pull: {
-              comments: {
-                _id: commentId,
-                commentAuthor: context.user.username,
-              },
-            },
-          },
+          { $pull: { savedBooks: { bookId } } }, // Pull the book with the matching bookId
           { new: true }
-        );
+        ).populate('savedBooks');
+
+        return objUpdatedUser;
       }
-      throw AuthenticationError;
+
+      throw new AuthenticationError('You need to be logged in!');
     },
+
   },
 };
 
