@@ -16,15 +16,6 @@ const typeDefs = `
     title: String!
   }
 
-  type GoogleBook {
-    id: ID
-    title: String
-    authors: [String]
-    description: String
-    thumbnail: String
-    infoLink: String
-  }
-
   input SaveBookInput {
     authors: [String]
     description: String!
@@ -38,7 +29,7 @@ const typeDefs = `
     users: [User]!
     user(username: String!): User
     me: User
-    searchBooks(query: String!): [GoogleBook]
+    searchBooks(query: String!): [Book]
   }
 
   type Mutation {

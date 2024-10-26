@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { gql, useLazyQuery, useMutation } from '@apollo/client';
+import { gql, useQuery, useMutation } from '@apollo/client';
 import {
   Container,
   Col,
@@ -10,7 +10,6 @@ import {
 } from 'react-bootstrap';
 
 import Auth from '../utils/auth';
-//import { saveBook, searchGoogleBooks } from '../utils/API';
 import { SEARCH_GOOGLE_BOOKS } from '../utils/queries'
 import { SAVE_BOOK } from '../utils/mutations'
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
@@ -31,8 +30,11 @@ const SearchBooks = () => {
     return () => saveBookIds(savedBookIds);
   });
 
-  // useLazyQuery for searching books using GraphQL query
-  const [searchBooks, { data: searchData, error: searchError }] = useLazyQuery(SEARCH_GOOGLE_BOOKS);
+  // useQuery for searching books using GraphQL query
+  const { data: searchData, error: searchError, refetch } = useQuery(SEARCH_GOOGLE_BOOKS, {
+    variables: { query: searchInput },
+    skip: !searchInput,
+  });
 
   // useMutation for saving a book
   const [saveBook, { error: saveError }] = useMutation(SAVE_BOOK);
@@ -45,25 +47,8 @@ const SearchBooks = () => {
       return false;
     }
 
-    //try {
-    //  const response = await searchGoogleBooks(searchInput);
-
-    //  if (!response.ok) {
-    //    throw new Error('something went wrong!');
-    //  }
-
-    //  const { items } = await response.json();
-
-    //  const bookData = items.map((book) => ({
-    //    bookId: book.id,
-    //    authors: book.volumeInfo.authors || ['No author to display'],
-    //    title: book.volumeInfo.title,
-    //    description: book.volumeInfo.description,
-    //    image: book.volumeInfo.imageLinks?.thumbnail || '',
-    //  }));
-
     try {
-      searchBooks({ variables: { query: searchInput } });
+      refetch(); // Manually trigger the search when form is submitted
       setSearchInput('');
     } catch (err) {
       console.error(err);
@@ -89,25 +74,6 @@ const SearchBooks = () => {
     // find the book in `searchedBooks` state by the matching id
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
 
-    // get token
-    //const token = Auth.loggedIn() ? Auth.getToken() : null;
-
-    //if (!token) {
-    //  return false;
-    //}
-
-    //try {
-    //  const response = await saveBook(bookToSave, token);
-
-    //  if (!response.ok) {
-    //    throw new Error('something went wrong!');
-    //  }
-
-      // if book successfully saves to user's account, save book id to state
-    //  setSavedBookIds([...savedBookIds, bookToSave.bookId]);
-    //} catch (err) {
-    //  console.error(err);
-    //}
     if (!Auth.loggedIn()) {
       return false;
     }

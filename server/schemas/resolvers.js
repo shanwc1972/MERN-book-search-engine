@@ -4,16 +4,6 @@ const { User } = require('../models');
 const { signToken } = require('../utils/auth');
 const fetch = require('node-fetch');
 
-// Function to search Google Books API
-const searchGoogleBooks = async (query) => {
-  const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch data from Google Books API');
-  }
-  const data = await response.json();
-  return data.items; // Returns an array of books
-};
-
 const resolvers = {
   Query: {
     //Get all users
@@ -39,6 +29,20 @@ const resolvers = {
       return User.findOne({ username })
         .select('-__v -password') //Exclude both the version key and the password 
         .populate('savedBooks'); // Populate the savedBooks field (if necessary)
+    },
+
+    // Search for books using Google Books API
+    searchBooks: async (_, { query }) => {
+      const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}`);
+      const data = await response.json();
+
+      return data.items.map((book) => ({
+        bookId: book.id,
+        title: book.volumeInfo.title,
+        authors: book.volumeInfo.authors || [],
+        description: book.volumeInfo.description || '',
+        image: book.volumeInfo.imageLinks?.thumbnail || '',
+      }));
     },
   },
 

@@ -58,16 +58,12 @@ export const GET_ME = gql`
 export const SEARCH_GOOGLE_BOOKS = gql`
   query searchBooks($query: String!) {
     searchBooks(query: $query) {
-      id
-      volumeInfo {
-        title
-        authors
-        description
-        imageLinks {
-          thumbnail
-        }
-        infoLink
-      }
+      bookId
+      title
+      authors
+      description
+      image
+      link
     }
   }
 `;
