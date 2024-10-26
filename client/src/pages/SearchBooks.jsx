@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { gql, useLazyQuery, useMutation } from '@apollo/client';
 import {
   Container,
   Col,
@@ -11,9 +11,10 @@ import {
 
 import Auth from '../utils/auth';
 //import { saveBook, searchGoogleBooks } from '../utils/API';
-import { SAVE_BOOK } from '../utils/mutations'; // Import the saveBook mutation
-import { SEARCH_GOOGLE_BOOKS } from '../utils/queries'; // Import the searchGoogleBooks query
+import { SEARCH_GOOGLE_BOOKS } from '../utils/queries'
+import { SAVE_BOOK } from '../utils/mutations'
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
+
 
 const SearchBooks = () => {
   // create state for holding returned google api data
@@ -24,65 +25,19 @@ const SearchBooks = () => {
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
 
-  // Setup Apollo's useLazyQuery for searching books
-  const [searchGoogleBooks, { data, loading, error }] = useLazyQuery(SEARCH_GOOGLE_BOOKS);
-
-  // Setup Apollo's useMutation for saving a book
-  const [saveBook] = useMutation(SAVE_BOOK);
-
-  // Update searchedBooks when search results are returned
-  useEffect(() => {
-    if (data && data.searchGoogleBooks) {
-      const bookData = data.searchGoogleBooks.items.map((book) => ({
-        bookId: book.id,
-        authors: book.volumeInfo.authors || ['No author to display'],
-        title: book.volumeInfo.title,
-        description: book.volumeInfo.description,
-        image: book.volumeInfo.imageLinks?.thumbnail || '',
-      }));
-      setSearchedBooks(bookData);
-    }
-  }, [data]);
-
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
   // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
   useEffect(() => {
     return () => saveBookIds(savedBookIds);
   });
 
+  // useLazyQuery for searching books using GraphQL query
+  const [searchBooks, { data: searchData, error: searchError }] = useLazyQuery(SEARCH_GOOGLE_BOOKS);
+
+  // useMutation for saving a book
+  const [saveBook, { error: saveError }] = useMutation(SAVE_BOOK);
+
   // create method to search for books and set state on form submit
-  // const handleFormSubmit = async (event) => {
-  //  event.preventDefault();
-
-  //  if (!searchInput) {
-  //    return false;
-  //  }
-
-  //  try {
-  //    const response = await searchGoogleBooks(searchInput);
-
-  //    if (!response.ok) {
-  //      throw new Error('something went wrong!');
-  //    }
-
-  //    const { items } = await response.json();
-
-  //    const bookData = items.map((book) => ({
-  //      bookId: book.id,
-  //      authors: book.volumeInfo.authors || ['No author to display'],
-  //      title: book.volumeInfo.title,
-  //      description: book.volumeInfo.description,
-  //      image: book.volumeInfo.imageLinks?.thumbnail || '',
-  //    }));
-
-  //    setSearchedBooks(bookData);
-  //    setSearchInput('');
-  //  } catch (err) {
-  //    console.error(err);
-  //  }
-  //};
-
-  // Handle form submit for searching books using GraphQL query
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
@@ -90,62 +45,85 @@ const SearchBooks = () => {
       return false;
     }
 
+    //try {
+    //  const response = await searchGoogleBooks(searchInput);
+
+    //  if (!response.ok) {
+    //    throw new Error('something went wrong!');
+    //  }
+
+    //  const { items } = await response.json();
+
+    //  const bookData = items.map((book) => ({
+    //    bookId: book.id,
+    //    authors: book.volumeInfo.authors || ['No author to display'],
+    //    title: book.volumeInfo.title,
+    //    description: book.volumeInfo.description,
+    //    image: book.volumeInfo.imageLinks?.thumbnail || '',
+    //  }));
+
     try {
-      searchGoogleBooks({ variables: { query: searchInput } });
+      searchBooks({ variables: { query: searchInput } });
       setSearchInput('');
     } catch (err) {
       console.error(err);
     }
   };
 
-
+  // set searched books when search data is fetched
+  useEffect(() => {
+    if (searchData) {
+      const bookData = searchData.searchBooks.map((book) => ({
+        bookId: book.bookId,
+        authors: book.authors || ['No author to display'],
+        title: book.title,
+        description: book.description,
+        image: book.image,
+      }));
+      setSearchedBooks(bookData);
+    }
+  }, [searchData]);
+     
   // create function to handle saving a book to our database
-  //const handleSaveBook = async (bookId) => {
-    // find the book in `searchedBooks` state by the matching id
-  //  const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
-
-    // get token
-  //  const token = Auth.loggedIn() ? Auth.getToken() : null;
-
-  //  if (!token) {
-  //    return false;
-  //  }
-
-  //  try {
-  //    const response = await saveBook(bookToSave, token);
-
-  //    if (!response.ok) {
-  //      throw new Error('something went wrong!');
-  //    }
-
-      // if book successfully saves to user's account, save book id to state
-  //    setSavedBookIds([...savedBookIds, bookToSave.bookId]);
-  //  } catch (err) {
-  //    console.error(err);
-  //  }
-  //};
-
-  // Handle saving a book using GraphQL mutation
   const handleSaveBook = async (bookId) => {
+    // find the book in `searchedBooks` state by the matching id
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
 
-    const token = Auth.loggedIn() ? Auth.getToken() : null;
-    if (!token) {
+    // get token
+    //const token = Auth.loggedIn() ? Auth.getToken() : null;
+
+    //if (!token) {
+    //  return false;
+    //}
+
+    //try {
+    //  const response = await saveBook(bookToSave, token);
+
+    //  if (!response.ok) {
+    //    throw new Error('something went wrong!');
+    //  }
+
+      // if book successfully saves to user's account, save book id to state
+    //  setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+    //} catch (err) {
+    //  console.error(err);
+    //}
+    if (!Auth.loggedIn()) {
       return false;
     }
 
     try {
-      await saveBook({
-        variables: { input: bookToSave }
+      const { data } = await saveBook({
+        variables: { input: bookToSave },
       });
 
-    // If the book is saved, update the savedBookIds state
-      setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+      if (data) {
+        setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+      }
     } catch (err) {
       console.error(err);
     }
   };
-
 
   return (
     <>

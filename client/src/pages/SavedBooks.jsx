@@ -10,8 +10,8 @@ import {
 
 //import { getMe, deleteBook } from '../utils/API';
 import Auth from '../utils/auth';
-import { QUERY_ME } from '../graphql/queries';
-import { REMOVE_BOOK } from '../graphql/mutations';
+import { GET_ME } from '../utils/queries';
+import { REMOVE_BOOK } from '../utils/mutations';
 import { removeBookId } from '../utils/localStorage';
 
 //const SavedBooks = () => {
@@ -72,7 +72,7 @@ import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
   // Fetch user data from the GraphQL server
-  const { loading, data } = useQuery(QUERY_ME, {
+  const { loading, data } = useQuery(GET_ME, {
     skip: !Auth.loggedIn(), // Only run if logged in
   });
   const userData = data?.me || {}; // Destructure the data for easier access

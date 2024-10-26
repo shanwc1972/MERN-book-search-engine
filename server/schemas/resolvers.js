@@ -2,6 +2,17 @@
 const { AuthenticationError } = require('apollo-server-express');
 const { User } = require('../models');
 const { signToken } = require('../utils/auth');
+const fetch = require('node-fetch');
+
+// Function to search Google Books API
+const searchGoogleBooks = async (query) => {
+  const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch data from Google Books API');
+  }
+  const data = await response.json();
+  return data.items; // Returns an array of books
+};
 
 const resolvers = {
   Query: {

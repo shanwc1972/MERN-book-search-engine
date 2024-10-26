@@ -4,7 +4,7 @@ import { useMutation } from '@apollo/client';
 
 //import { createUser } from '../utils/API';
 import Auth from '../utils/auth';
-import { CREATE_USER } from '../graphql/mutations';
+import { CREATE_USER } from '../utils/mutations';
 
 const SignupForm = () => {
   // set initial form state
