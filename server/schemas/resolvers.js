@@ -49,6 +49,7 @@ const resolvers = {
   Mutation: {
     // Create a new user and return auth token
     createUser: async (parent, { username, email, password }) => {
+      console.log('createUser called'); //For the benefit of our diagnostic logging
       const user = await User.create({ username, email, password });
       const token = signToken(user);
 
@@ -57,6 +58,7 @@ const resolvers = {
 
     // Login user and return auth token
     login: async (parent, { email, password }) => {
+      console.log('login called'); //For the benefit of our diagnostic logging
       const user = await User.findOne({ email });
 
       if (!user) {
@@ -75,8 +77,7 @@ const resolvers = {
 
     // Save a new book to the user's savedBooks array (if authenticated)
     saveBook: async (parent, { input }, context) => {
-      console.log('context');
-      console.log(context);
+      console.log('saveBook called'); //For the benefit of our diagnostic logging
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
@@ -91,7 +92,8 @@ const resolvers = {
     },
 
     // Delete a book from the user's savedBooks array (if authenticated)
-    deleteBook: async (parent, { bookId }, context) => {
+    removeBook: async (parent, { bookId }, context) => {
+      console.log('removeBook called'); //For the benefit of our diagnostic logging
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
