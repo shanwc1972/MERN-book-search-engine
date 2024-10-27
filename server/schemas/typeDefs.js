@@ -17,12 +17,12 @@ const typeDefs = `
   }
 
   input SaveBookInput {
-    authors: [String]
-    description: String!
     bookId: String!
+    authors: [String]
+    title: String!
+    description: String!
     image: String
     link: String
-    title: String!
   }
 
   type Query {

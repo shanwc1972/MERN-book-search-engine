@@ -45,6 +45,7 @@ const SignupForm = () => {
       //}
 
       //const { token, user } = await response.json();
+      console.log(data);
       const { token, user } = data.addUser;
       console.log(user);
 

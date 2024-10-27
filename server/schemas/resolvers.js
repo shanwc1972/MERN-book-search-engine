@@ -60,7 +60,7 @@ const resolvers = {
       const user = await User.findOne({ email });
 
       if (!user) {
-        throw new AuthenticationError('Incorrect email or password');
+        throw new AuthenticationError('Incorrect email or username');
       }
 
       const correctPw = await user.isCorrectPassword(password);
@@ -75,6 +75,8 @@ const resolvers = {
 
     // Save a new book to the user's savedBooks array (if authenticated)
     saveBook: async (parent, { input }, context) => {
+      console.log('context');
+      console.log(context);
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },

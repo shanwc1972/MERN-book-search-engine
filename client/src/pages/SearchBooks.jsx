@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { gql, useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import {
   Container,
   Col,
@@ -31,21 +31,18 @@ const SearchBooks = () => {
   });
 
   // useQuery for searching books using GraphQL query
-  const { data: searchData, error, refetch } = useQuery(SEARCH_GOOGLE_BOOKS, {
+  const { data: searchData, error: searchError, refetch  } = useQuery(SEARCH_GOOGLE_BOOKS, {
     variables: { query: searchInput },
     skip: !searchInput,
     errorPolicy: 'all'
   });
 
-  //Check for errors regarding our GraphQL query
-  useEffect(() => {
-    if (error) {
-      console.error("GraphQL Error:", error);
-    }
-  }, [error]); 
+  if(searchError) {
+    console.log(searchError);
+  }
 
   // useMutation for saving a book
-  const [saveBook, { error: saveError }] = useMutation(SAVE_BOOK);
+  const [saveBook] = useMutation(SAVE_BOOK);
 
   // create method to search for books and set state on form submit
   const handleFormSubmit = async (event) => {
@@ -83,19 +80,31 @@ const SearchBooks = () => {
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
 
     if (!Auth.loggedIn()) {
+      console.log("User not authenticated.");
       return false;
     }
 
     try {
+      console.log(bookToSave);
       const { data } = await saveBook({
-        variables: { input: bookToSave },
+        variables: {
+            input: {
+              bookId: bookToSave.bookId,
+              authors: bookToSave.authors,
+              title: bookToSave.title,
+              description: bookToSave.description,
+              image: bookToSave.image,
+              link: bookToSave.link || '',
+            },
+        },
       });
 
       if (data) {
         setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+        console.log("Book saved successfully.");
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error saving book:", err);
     }
   };
 
