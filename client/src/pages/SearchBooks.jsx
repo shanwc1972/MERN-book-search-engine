@@ -31,10 +31,18 @@ const SearchBooks = () => {
   });
 
   // useQuery for searching books using GraphQL query
-  const { data: searchData, error: searchError, refetch } = useQuery(SEARCH_GOOGLE_BOOKS, {
+  const { data: searchData, error, refetch } = useQuery(SEARCH_GOOGLE_BOOKS, {
     variables: { query: searchInput },
     skip: !searchInput,
+    errorPolicy: 'all'
   });
+
+  //Check for errors regarding our GraphQL query
+  useEffect(() => {
+    if (error) {
+      console.error("GraphQL Error:", error);
+    }
+  }, [error]); 
 
   // useMutation for saving a book
   const [saveBook, { error: saveError }] = useMutation(SAVE_BOOK);
