@@ -35,25 +35,25 @@ const SignupForm = () => {
     }
 
     try {
-      //const response = await createUser(userFormData);
-      const { data } = await addUser({
+      const response = await addUser({
         variables: { ...userFormData },
-      })
-
-      //if (!response.ok) {
-      //  throw new Error('something went wrong!');
-      //}
-
-      //const { token, user } = await response.json();
-      console.log(data);
-      const { token, user } = data.addUser;
-      console.log(user);
-
-      Auth.login(token);
+      });
+        
+      if (!response?.data?.createUser) {
+        console.error("No user data returned from mutation.");
+        setShowAlert(true);
+        return;
+      }
+  
+      const token = response.data.createUser.token;
+      const user = response.data.createUser.user;
+  
+      Auth.login(token); // Log in the user with the token
     } catch (err) {
-      console.error(err);
+      console.error("Error during sign-up:", err);
       setShowAlert(true);
     }
+    
 
     setUserFormData({
       username: '',

@@ -49,16 +49,25 @@ const resolvers = {
   Mutation: {
     // Create a new user and return auth token
     createUser: async (parent, { username, email, password }) => {
-      console.log('createUser called'); //For the benefit of our diagnostic logging
-      const user = await User.create({ username, email, password });
-      const token = signToken(user);
+      console.log(`createUser called with parameters ${username}, ${email} and ${password}`); //For the benefit of our diagnostic logging
+      try {
+        // Create the user in the database
+        const user = await User.create({ username, email, password });
 
-      return { token, user };
+        // Generate a token for the new user
+        const token = signToken(user);
+
+        // Return the token and user data as expected by the client
+        return { token, user };
+      } catch (err) {
+        console.error("Error in createUser resolver:", err);
+        throw new AuthenticationError("Error creating user");
+      }
     },
 
     // Login user and return auth token
     login: async (parent, { email, password }) => {
-      console.log('login called'); //For the benefit of our diagnostic logging
+      console.log(`login called with parameter ${email} and ${password}`); //For the benefit of our diagnostic logging
       const user = await User.findOne({ email });
 
       if (!user) {
@@ -77,7 +86,7 @@ const resolvers = {
 
     // Save a new book to the user's savedBooks array (if authenticated)
     saveBook: async (parent, { input }, context) => {
-      console.log('saveBook called'); //For the benefit of our diagnostic logging
+      console.log(`saveBook called with paramater ${input}`); //For the benefit of our diagnostic logging
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
@@ -93,7 +102,7 @@ const resolvers = {
 
     // Delete a book from the user's savedBooks array (if authenticated)
     removeBook: async (parent, { bookId }, context) => {
-      console.log('removeBook called'); //For the benefit of our diagnostic logging
+      console.log(`removeBook called with parameter ${bookId}`); //For the benefit of our diagnostic logging
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
