@@ -1,7 +1,7 @@
 # MERN-book-search-engine
 
 ## Description
-This is a Books Search application employing the Google Books API. The application has been developed using the MongoDB, Express, React and Node (MERN) stack. The application itself is a port of an existing application that used REST API to a new application employing GraphQL.
+This is a Books Search application employing the Google Books API. The application has been developed using the MongoDB, Express, React and Node (MERN) stack. The application itself is a port of an existing application that used the REST API to a new application employing GraphQL.
 
 ## Table of contents
   - [Installation](#installation)
@@ -10,12 +10,15 @@ This is a Books Search application employing the Google Books API. The applicati
   - [License](#license)
   
 ## Installation
-No installation is required as this is an deployed application via React.  
+No installation is required as this is a deployed application via React.  
   
 ## Usage
-The application / page can be accessed at: 
+The application / page can be accessed at: https://mern-book-search-engine-0l7r.onrender.com
 
 The following image shows the application's appearance and functionality:
+
+![Screenshot 2024-10-28 at 4 19 47 pm](https://github.com/user-attachments/assets/768cf792-e021-4c4c-8e97-664cef179940)
+
 
 The application has a menu along the top allowing you to search for books, and to Login/Signup.
 
@@ -30,17 +33,17 @@ On logging on, you will be taken back to the Search for books page. You can ente
 ### GraphQL
 As this application employs a GraphQL API, use of a GraphQL API developer tool, like the Apolloserver Studio Sandox, allows one to employ any of the queries or mutations exposed by the application. These include:
 
-Queries:
-me: User  - to query the logged on user  
-searchbooks(query): [Book]  - to query for an array of books from the Google API  
-user(username): User  - to query a user for a given username  
-users: [User]!  - to query all users  
+Queries:  
+`me: User`  - to query the logged on user  
+`searchbooks(query): [Book]`  - to query for an array of books from the Google API  
+`user(username): User`  - to query a user for a given username  
+`users: [User]!`  - to query all users  
 
-Mutations:
-createUser(username,email, password): Auth  - creates a new user given a username, email and password  
-login(email, password): Auth - logs in a user given an email and password  
-removeBook(bookID): User  - removes a book with a given id (provided you are logged on)
-saveBook(bookInput): User  - allows you to save a book against the currently logged in user  
+Mutations:  
+`createUser(username,email, password): Auth`  - creates a new user given a username, email and password  
+`login(email, password): Auth` - logs in a user given an email and password  
+`removeBook(bookID): User`  - removes a book with a given id (provided you are logged on)  
+`saveBook(bookInput): User`  - allows you to save a book against the currently logged in user  
  
 
 ## Contributing
