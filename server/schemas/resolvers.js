@@ -1,5 +1,5 @@
 //Setup our imports
-const { AuthenticationError } = require('apollo-server-express');
+//const { AuthenticationError } = require('apollo-server-express');
 const { User } = require('../models');
 const { signToken } = require('../utils/auth');
 const fetch = require('node-fetch');
@@ -21,7 +21,7 @@ const resolvers = {
         return userData;
       }
 
-      throw new AuthenticationError('You need to be logged in!');
+      //throw new AuthenticationError('You need to be logged in!');
     },
 
     // Get a single user by their username
@@ -63,7 +63,7 @@ const resolvers = {
         return { token, user };
       } catch (err) {
         console.error("Error in createUser resolver:", err);
-        throw new AuthenticationError("Error creating user");
+        //throw new AuthenticationError("Error creating user");
       }
     },
 
@@ -73,13 +73,13 @@ const resolvers = {
       const user = await User.findOne({ email });
 
       if (!user) {
-        throw new AuthenticationError('Incorrect email or username');
+        //throw new AuthenticationError('Incorrect email or username');
       }
 
       const correctPw = await user.isCorrectPassword(password);
 
       if (!correctPw) {
-        throw new AuthenticationError('Incorrect email or password');
+        //throw new AuthenticationError('Incorrect email or password');
       }
 
       const token = signToken(user);
@@ -99,7 +99,7 @@ const resolvers = {
         return updatedUser;
       }
 
-      throw new AuthenticationError('You need to be logged in!');
+      //throw new AuthenticationError('You need to be logged in!');
     },
 
     // Delete a book from the user's savedBooks array (if authenticated)
@@ -115,7 +115,7 @@ const resolvers = {
         return updatedUser;
       }
 
-      throw new AuthenticationError('You need to be logged in!');
+      //throw new AuthenticationError('You need to be logged in!');
     },
 
   },
