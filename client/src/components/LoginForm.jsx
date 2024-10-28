@@ -33,22 +33,14 @@ const LoginForm = () => {
     }
 
     try {
-      //const response = await loginUser(userFormData);
-
-      //if (!response.ok) {
-      //  throw new Error('something went wrong!');
-      //}
-
-      //const { token, user } = await response.json();
-      console.log(userFormData);
+      //Execute the LOGIN_USER mutation
       const { data } = await gqlmloginUser({
         variables: { ...userFormData },
       });
 
-      console.log(data);
       const { token, user } = data.login;
       console.log(user);
-      Auth.login(token);
+      Auth.login(token); //Signin the user
     } catch (err) {
       console.error(err);
       setShowAlert(true);

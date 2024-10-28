@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useMutation } from '@apollo/client';
 
-//import { createUser } from '../utils/API';
 import Auth from '../utils/auth';
 import { CREATE_USER } from '../utils/mutations';
 
@@ -25,7 +24,7 @@ const SignupForm = () => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-    // check if form has everything (as per react-bootstrap docs)
+    // check if form has everything
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -39,6 +38,7 @@ const SignupForm = () => {
         variables: { ...userFormData },
       });
         
+      //Check if data is returned frm the server and show an alert if it doesn't
       if (!response?.data?.createUser) {
         console.error("No user data returned from mutation.");
         setShowAlert(true);
@@ -54,7 +54,7 @@ const SignupForm = () => {
       setShowAlert(true);
     }
     
-
+    //Reset our form
     setUserFormData({
       username: '',
       email: '',

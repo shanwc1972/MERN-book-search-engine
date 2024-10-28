@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import {
   Container,
   Col,
@@ -20,25 +20,21 @@ const SearchBooks = () => {
   const [searchedBooks, setSearchedBooks] = useState([]);
   // create state for holding our search field data
   const [searchInput, setSearchInput] = useState('');
-
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
 
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
-  // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
   useEffect(() => {
     return () => saveBookIds(savedBookIds);
   });
 
   // useQuery for searching books using GraphQL query
-  const { data: searchData, error: searchError, refetch  } = useQuery(SEARCH_GOOGLE_BOOKS, {
-    variables: { query: searchInput },
-    skip: !searchInput,
-    errorPolicy: 'all'
+  const [searchBooks, { data: searchData, error: searchError }] = useLazyQuery(SEARCH_GOOGLE_BOOKS, {
+    errorPolicy: 'all',
   });
 
-  if(searchError) {
-    console.log(searchError);
+  if (searchError) {
+    console.error("Search error:", searchError);
   }
 
   // useMutation for saving a book
@@ -47,22 +43,19 @@ const SearchBooks = () => {
   // create method to search for books and set state on form submit
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-
-    if (!searchInput) {
-      return false;
-    }
-
+    if (!searchInput) return;
+    
     try {
-      refetch(); // Manually trigger the search when form is submitted
+      await searchBooks({ variables: { query: searchInput } }); // Manually trigger the search when form is submitted
       setSearchInput('');
     } catch (err) {
-      console.error(err);
+      console.error("Error executing search:", err);
     }
   };
 
   // set searched books when search data is fetched
   useEffect(() => {
-    if (searchData) {
+    if (searchData && searchData.searchBooks) {
       const bookData = searchData.searchBooks.map((book) => ({
         bookId: book.bookId,
         authors: book.authors || ['No author to display'],
@@ -71,6 +64,8 @@ const SearchBooks = () => {
         image: book.image,
       }));
       setSearchedBooks(bookData);
+    } else {
+      setSearchedBooks([]); // Clear searched books if no data is returned
     }
   }, [searchData]);
      

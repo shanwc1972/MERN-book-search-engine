@@ -33,7 +33,9 @@ const resolvers = {
 
     // Search for books using Google Books API
     searchBooks: async (_, { query }) => {
-      const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}`);
+      const GOOGLE_BOOKS_API_URL = "https://www.googleapis.com/books/v1/volumes";
+      const API_KEY = "AIzaSyDoRX9NDwF7bYBR9S1M2sIfG8xW6UN3aCg";
+      const response = await fetch(`${GOOGLE_BOOKS_API_URL}?q=${encodeURIComponent(query)}&key=${API_KEY}`);
       const data = await response.json();
 
       return data.items.map((book) => ({
